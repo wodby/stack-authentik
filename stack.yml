@@ -1,0 +1,53 @@
+name: authentik
+title: authentik
+icon: authentik
+
+services:
+- name: authentik
+  title: authentik
+  service: authentik
+  required: true
+  main: true
+  derivatives:
+  # Runs authentik's background tasks; authentik needs it running.
+  - name: worker
+    service: authentik-worker
+    required: true
+    replicas: 1
+  links:
+  - name: postgres
+    service: postgres
+  - name: storage
+    service: storage
+  - name: sendmail
+    service: opensmtpd
+  volumes:
+  - name: data
+    size: 5
+
+# authentik's database: users, applications, providers, flows, sessions, its
+# cache and its task queue.
+- name: postgres
+  title: PostgreSQL
+  service: postgres
+  required: true
+  volumes:
+  - name: data
+    size: 10
+
+# Files the server and the worker share: uploaded icons, logos and backgrounds,
+# and reports.
+- name: storage
+  title: Shared file storage
+  service: nfs-provisioner
+  required: true
+  volumes:
+  - name: data
+    size: 10
+
+# authentik sends password recovery, verification and notification emails. Its
+# email settings can point to another SMTP server instead.
+- name: opensmtpd
+  title: OpenSMTPD
+  service: opensmtpd
+  disabled: true
