@@ -1,6 +1,7 @@
 name: authentik
 title: authentik
 icon: authentik
+category: networking
 docs: https://wodby.com/docs/2.0/stacks/catalog/authentik/
 
 services:
